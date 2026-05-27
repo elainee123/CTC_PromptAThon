@@ -1,0 +1,427 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+#impulse-blocker-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: 'Instrument Sans', -apple-system, sans-serif;
+}
+
+#impulse-blocker-overlay.ibb-visible {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(20px);
+  opacity: 1;
+  pointer-events: all;
+}
+
+#impulse-blocker-overlay * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Card ── */
+.ibb-card {
+  width: 440px;
+  max-width: 94vw;
+  max-height: 92vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #18181B;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 24px;
+  padding: 0;
+  color: #FAFAFA;
+  transform: translateY(40px) scale(0.92);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+}
+
+.ibb-visible .ibb-card {
+  transform: translateY(0) scale(1);
+}
+
+.ibb-card::-webkit-scrollbar { width: 4px; }
+.ibb-card::-webkit-scrollbar-track { background: transparent; }
+.ibb-card::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+/* ── Warning Banner ── */
+.ibb-banner {
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+  padding: 28px 28px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.ibb-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 12px,
+    rgba(0,0,0,0.06) 12px,
+    rgba(0,0,0,0.06) 24px
+  );
+}
+
+.ibb-banner-content {
+  position: relative;
+  z-index: 1;
+}
+
+.ibb-hand {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+.ibb-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.ibb-subtitle {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+}
+
+/* ── Body ── */
+.ibb-body {
+  padding: 24px;
+}
+
+/* ── Price Section ── */
+.ibb-price-section {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ibb-price-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.ibb-price-input-wrap {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 8px 20px;
+  transition: border-color 0.2s;
+}
+
+.ibb-price-input-wrap:focus-within {
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.ibb-price-currency {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 32px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.ibb-price-input {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 36px;
+  font-weight: 700;
+  color: #fff;
+  background: none;
+  border: none;
+  outline: none;
+  width: 150px;
+  text-align: left;
+}
+
+.ibb-price-input::placeholder { color: rgba(255,255,255,0.12); }
+
+/* ── Budget ── */
+.ibb-budget-section {
+  margin-bottom: 24px;
+}
+
+.ibb-budget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.ibb-budget-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.ibb-budget-pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+
+.ibb-budget-pct.ibb-safe   { color: #34D399; background: rgba(52,211,153,0.1); }
+.ibb-budget-pct.ibb-warn   { color: #FBBF24; background: rgba(251,191,36,0.1); }
+.ibb-budget-pct.ibb-danger  { color: #F87171; background: rgba(248,113,113,0.1); }
+
+.ibb-bar-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+.ibb-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s;
+}
+
+.ibb-bar-fill.ibb-safe   { background: #34D399; }
+.ibb-bar-fill.ibb-warn   { background: #FBBF24; }
+.ibb-bar-fill.ibb-danger  { background: #F87171; }
+
+.ibb-bar-new {
+  height: 100%;
+  border-radius: 100px;
+  position: absolute;
+  top: 0;
+  transition: left 0.8s, width 0.8s;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(255,255,255,0.2),
+    rgba(255,255,255,0.2) 2px,
+    transparent 2px,
+    transparent 5px
+  );
+  animation: ibb-stripe 0.5s linear infinite;
+}
+
+@keyframes ibb-stripe {
+  0%   { background-position: 0 0; }
+  100% { background-position: 7px 0; }
+}
+
+.ibb-budget-detail {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.25);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── Fun Comparisons ── */
+.ibb-comparisons {
+  margin-bottom: 24px;
+}
+
+.ibb-comp-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.ibb-comp-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ibb-comp-scroll::-webkit-scrollbar { height: 0; display: none; }
+
+.ibb-comp-card {
+  flex: 0 0 auto;
+  width: 120px;
+  scroll-snap-align: start;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 16px 12px;
+  text-align: center;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.ibb-comp-card:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+.ibb-comp-emoji {
+  font-size: 28px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.ibb-comp-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.ibb-comp-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.35);
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+/* ── Investment ── */
+.ibb-invest-section {
+  margin-bottom: 24px;
+}
+
+.ibb-invest-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.ibb-invest-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 12px;
+  margin-bottom: 4px;
+  transition: background 0.15s;
+}
+
+.ibb-invest-row:hover { background: rgba(255,255,255,0.03); }
+
+.ibb-invest-years {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 500;
+  min-width: 60px;
+}
+
+.ibb-invest-bar-wrap {
+  flex: 1;
+  margin: 0 14px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.ibb-invest-bar {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, #34D399, #10B981);
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ibb-invest-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: #34D399;
+  min-width: 65px;
+  text-align: right;
+}
+
+/* ── Nudge ── */
+.ibb-nudge {
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+}
+
+.ibb-nudge strong {
+  color: #A78BFA;
+  font-weight: 600;
+}
+
+/* ── Buttons ── */
+.ibb-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ibb-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: 14px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  letter-spacing: 0.2px;
+}
+
+.ibb-btn-cancel {
+  background: #fff;
+  color: #18181B;
+}
+.ibb-btn-cancel:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15);
+}
+
+.ibb-btn-proceed {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.ibb-btn-proceed:hover {
+  color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ibb-btn-proceed.ibb-locked {
+  pointer-events: none;
+  opacity: 0.25;
+}
+
+.ibb-cooldown-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.15);
+  margin-top: 2px;
+}

@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "Impulse Buy Blocker",
+  "version": "1.0.0",
+  "description": "Think twice before you buy. See what your money could become.",
+  "permissions": ["storage", "activeTab"],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "content/config.js",
+        "content/priceDetector.js",
+        "content/overlay/builder.js",
+        "content/overlay/budget.js",
+        "content/overlay/manager.js",
+        "content/index.js"
+      ],
+      "css": ["styles/overlay.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
+}

@@ -1,0 +1,53 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Impulse Blocker — buy-button highlight styles
+   Injected into every page alongside overlay.css.
+   All selectors are tightly namespaced to avoid collisions.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Watched-button ring ───────────────────────────────────────────────────── */
+
+/*
+ * outline is used instead of border or box-shadow so it:
+ *   - never affects layout (no reflow)
+ *   - renders outside overflow:hidden containers
+ *   - stacks correctly above site styles
+ */
+.ibb-watched {
+  outline: 2px solid rgba(239, 68, 68, 0.55) !important;
+  outline-offset: 3px !important;
+  transition: outline-color 0.2s ease, box-shadow 0.2s ease !important;
+  animation: ibb-pulse-in 0.7s ease-out both !important;
+}
+
+.ibb-watched:hover,
+.ibb-watched:focus-visible {
+  outline-color: rgba(239, 68, 68, 1) !important;
+  box-shadow:
+    0 0 0 4px rgba(239, 68, 68, 0.12),
+    0 0 20px rgba(239, 68, 68, 0.18) !important;
+}
+
+/* One-shot entrance pulse — fades from bright to resting state */
+@keyframes ibb-pulse-in {
+  0%   {
+    outline-color: rgba(239, 68, 68, 1);
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.25);
+  }
+  100% {
+    outline-color: rgba(239, 68, 68, 0.55);
+    box-shadow: none;
+  }
+}
+
+
+/* ── Tooltip ───────────────────────────────────────────────────────────────── */
+
+.ibb-tooltip {
+  /* Fixed so it never clips inside overflow:hidden ancestors */
+  position: fixed;
+  z-index: 2147483646; /* one below the overlay */
+
+  background: #1C1C1F;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 9px;
+  box
