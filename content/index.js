@@ -13,7 +13,7 @@
 
   let isBypassing = false;
 
-  // ─── Helpers ──────────────────────────────────────────────────────────────────
+  // ─── Helpers ────────────────────────────────────────────────────────────────
 
   /**
    * Thin wrapper around chrome.runtime.sendMessage that reads lastError so Chrome
@@ -36,7 +36,7 @@
     });
   }
 
-  // ─── Click interceptor ────────────────────────────────────────────────────────
+  // ─── Click interceptor ──────────────────────────────────────────────────────
 
   function interceptClicks(e) {
     if (isBypassing) return;
@@ -56,8 +56,27 @@
         target.matches?.(config.BUTTON_SELECTORS) &&
         detector.isBuyButton(target)
       ) {
+        // Capture target now — it may be inaccessible inside the async callback
+        // once the DOM has changed (e.g. SPA navigation).
+        const clickedTarget = target;
+
+        // Swallow the click immediately so the site's own handler doesn't fire.
+        // If we later discover the extension is disabled, we re-fire it below
+        // using the isBypassing flag so it passes through our interceptor cleanly.
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+
         send({ type: "GET_DATA" }, (response) => {
-          if (!response || response.settings?.enabled === false) return;
+          // Extension disabled or storage unavailable — restore the click.
+          if (!response || response.settings?.enabled === false) {
+            isBypassing = true;
+            clickedTarget.click();
+            isBypassing = false;
+            return;
+          }
+
+          // Another overlay already open (e.g. user double-clicked).
           if (ui.isShowing()) return;
 
           const price = detector.detectPrice();
@@ -66,7 +85,10 @@
             price,
             response.settings,
             response.spending,
-            // onProceed: user waited out the cooldown and confirmed the purchase
+
+            // onProceed: user waited out the cooldown and chose to buy.
+            // `finalPrice` is whatever the user has in the price input —
+            // the overlay lets them correct the auto-detected amount.
             (finalPrice) => {
               send(
                 {
@@ -76,19 +98,22 @@
                   wasBlocked: false,
                 },
                 () => {
-                  // Bypass the interceptor for this one programmatic click
+                  // Bypass our interceptor for this one programmatic re-click.
                   isBypassing = true;
-                  target.click();
+                  clickedTarget.click();
                   isBypassing = false;
                 },
               );
             },
-            // onCancel: user dismissed the overlay without buying
-            () => {
-              // Fire-and-forget — no callback needed, so no lastError check required
+
+            // onCancel: user dismissed the overlay — record as blocked.
+            // `cancelPrice` is read from the input before the overlay is torn
+            // down, so it reflects any price correction the user made.
+            (cancelPrice) => {
+              // Fire-and-forget: no callback means Chrome won't set lastError.
               chrome.runtime.sendMessage({
                 type: "LOG_PURCHASE",
-                amount: price,
+                amount: cancelPrice,
                 site: window.location.hostname,
                 wasBlocked: true,
               });
@@ -96,9 +121,6 @@
           );
         });
 
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
         return;
       }
 
