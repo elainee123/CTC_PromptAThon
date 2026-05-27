@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=400">
+  <title>Impulse Blocker</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">✋</div>
+      <div class="header-text">
+        <h1>Impulse Blocker</h1>
+        <p>Protecting your wallet</p>
+      </div>
+    </div>
+    <label class="toggle">
+      <input type="checkbox" id="toggle-enabled" checked>
+      <span class="toggle-track"></span>
+    </label>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="dashboard">Overview</button>
+    <button class="tab"        data-tab="history">History</button>
+    <button class="tab"        data-tab="settings">Settings</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Overview -->
+  <div class="panel active" id="panel-dashboard">
+    <div class="stats-ring">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 120 120">
+          <circle class="ring-bg"   cx="60" cy="60" r="50"/>
+          <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="50"
+                  stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-pct"   id="ring-pct">0%</div>
+          <div class="ring-label">Budget used</div>
+        </div>
+      </div>
+      <div class="side-stats">
+        <div class="side-stat">
+          <div class="side-stat-val val-red"   id="stat-spent">$0</div>
+          <div class="side-stat-label">Spent</div>
+        </div>
+        <div class="side-stat">
+          <div class="side-stat-val val-green" id="stat-left">$0</div>
+          <div class="side-stat-label">Remaining</div>
+        </div>
+      </div>
+    </div>
+    <div class="mini-cards">
+      <div class="mini-card">
+        <span class="mini-card-emoji">🛡️</span>
+        <div class="mini-card-val val-purple" id="stat-blocked">0</div>
+        <div class="mini-card-label">Blocked</div>
+      </div>
+      <div class="mini-card">
+        <span class="mini-card-emoji">🧋</span>
+        <div class="mini-card-val val-amber" id="stat-bobas">0</div>
+        <div class="mini-card-label">Bobas worth saved</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="panel" id="panel-history">
+    <div id="history-list"></div>
+  </div>
+
+  <!-- Settings -->
+  <div class="panel" id="panel-settings">
+    <div class="field">
+      <div class="field-label">Monthly budget</div>
+      <input type="number" class="field-input" id="set-budget"
+             placeholder="2000" min="0" step="100">
+    </div>
+    <div class="field">
+      <div class="field-label">Cooldown timer (seconds)</div>
+      <input type="number" class="field-input" id="set-cooldown"
+             placeholder="30" min="5" max="300" step="5">
+      <div class="field-hint">How long before "Buy anyway" unlocks</div>
+    </div>
+    <button class="btn-save"  id="save-btn">Save changes</button>
+    <button class="btn-reset" id="reset-btn">Reset monthly data</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
