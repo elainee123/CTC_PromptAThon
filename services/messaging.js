@@ -1,28 +1,26 @@
 /**
  * MessagingService provides promise-based wrappers around chrome.runtime.sendMessage.
- * All communication between the popup/content scripts and the background service worker
- * goes through here, keeping raw chrome API calls in one place.
+ * All communication between the popup and the background service worker goes through here.
+ *
+ * Design contract: these methods always RESOLVE (never reject).
+ * On error they resolve with `null` and log a console warning.
+ * This means callers — especially UI code — can use simple null checks
+ * (`if (!data) return`) without wrapping every call in try/catch.
+ *
+ * Chrome requires `lastError` to be read inside the callback or it logs
+ * "Unchecked runtime.lastError" to the console. We read it here so callers
+ * never need to worry about it.
  */
 
-/**
- * Sends a message to the background service worker and returns a promise.
- * Rejects if chrome.runtime.lastError is set (e.g. service worker not ready,
- * extension context invalidated, or the port closed before a response arrived).
- *
- * Chrome requires lastError to be read inside the callback — if it is not,
- * the browser logs "Unchecked runtime.lastError" to the console.
- *
- * @param {Object} payload - The message object to send.
- * @returns {Promise<any>}
- */
 function sendMsg(payload) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     chrome.runtime.sendMessage(payload, (response) => {
       if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError.message));
-      } else {
-        resolve(response);
+        console.warn("[IB] Message failed:", chrome.runtime.lastError.message);
+        resolve(null);
+        return;
       }
+      resolve(response);
     });
   });
 }
